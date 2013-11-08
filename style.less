@@ -1,0 +1,151 @@
+.glossy-button {
+    box-sizing: border-box;
+    //border-top: 3px solid rgba(255,255,255,0.5);
+    border-bottom: 3px solid rgba(0,0,0,0.25);
+    box-shadow: 0 15px 15px rgba(255,255,255,.5) inset;
+
+    @a: rgba(0,0,0,0.125);
+    @b: rgba(0,0,0,0);
+    @c: rgba(0,0,0,0.125);
+    @d: rgba(255,255,255,0.25);
+
+    -moz-transition:     background-color 0.5s,    -moz-transform 0.5s, box-shadow 0.5s, padding 0.5s;
+    -webkit-transition:  background-color 0.5s, -webkit-transform 0.5s, box-shadow 0.5s, padding 0.5s;
+    transition:          background-color 0.5s,         transform 0.5s, box-shadow 0.5s, padding 0.5s;
+
+    background-image: -moz-linear-gradient(-45deg, @a 0%, @b 50%, @c 51%, @d 100%); /* Chrome10+,Safari5.1+ */
+    background-image: linear-gradient(135deg, @a 0%, @b 50%, @c 51%, @d 100%); /* W3C */
+}
+
+.transition (@x) {
+    transition: @x;
+    -moz-transition: @x;
+    -webkit-transition: @x;
+}
+
+.transform (@x) {
+    transform: @x;
+    -moz-transform: @x;
+    -webkit-transform: @x;
+}
+
+#board {
+    width: 640px;
+    padding: 20px;
+    margin: auto;
+    background: url('resources/bg.png') repeat;
+    overflow: hidden;
+
+    .square {
+        float: left;
+        background-color: orange;
+
+        width: 50px;
+        height: 50px;
+        border-radius: 10px;
+        margin: 5px;
+
+        .glossy-button();
+
+        &.pulse {
+            box-shadow: 0 0 15px white;
+        }
+    }
+
+    .newline {
+        clear: both;
+    }
+}
+
+#mixins {
+    * {
+        float: left;
+    }
+
+    *:first-child {
+        border-radius: 15px 0 0 15px;
+    }
+
+    *:last-child {
+        border-radius: 0 15px 15px 0;
+    }
+}
+
+.mixin {
+    display: block;
+    width: 100px;
+    height: 100px;
+    padding: 3px 24px;
+    font-size: 80px;
+    font-weight: bold;
+    color: white;
+    text-shadow: 0 0px 1px rgba(0,0,0,.75);
+    .glossy-button();
+    .transform(scale(1,1));
+    
+    &:hover {
+    //    .transform(scale(1.1,1.1));
+        box-shadow: 0 15px 25px rgba(255,255,255,1) inset, 0 5px 5px rgba(0,0,0,0) inset;
+    }
+
+    &:active {
+        //.transform(scale(1.2,1.2));
+        box-shadow: 0 15px 25px rgba(255,255,255,0) inset, 0 5px 5px rgba(0,0,0,.25) inset;
+        padding: 10px 24px;
+    }
+
+}
+
+
+.pulse {
+    -webkit-animation-name: pulse;
+    -webkit-animation-duration: 0.5s;
+    -webkit-animation-iteration-count: infinite;
+    -webkit-animation-direction: alternate;
+    -webkit-animation-delay: 0;
+    -webkit-animation-play-state: running;
+    -webkit-animation-fill-mode: none;
+
+    -moz-animation-name: pulse;
+    -moz-animation-duration: 0.5s;
+    -moz-animation-iteration-count: infinite;
+    -moz-animation-direction: alternate;
+    -moz-animation-delay: 0;
+    -moz-animation-play-state: running;
+    -moz-animation-fill-mode: none;
+
+    animation-name: pulse;
+    animation-duration: 0.5s;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+    animation-delay: 0;
+    animation-play-state: running;
+    animation-fill-mode: none;
+}
+
+@-webkit-keyframes pulse {
+    from {
+        -webkit-transform: scale(1,1);
+    }
+    to {
+        -webkit-transform: scale(1.1,1.1);
+    }
+}
+
+@-moz-keyframes pulse {
+    from {
+        -moz-transform: scale(1,1);
+    }
+    to {
+        -moz-transform: scale(1.1,1.1);
+    }
+}
+
+@keyframes pulse {
+    from {
+        transform: scale(1,1);
+    }
+    to {
+        transform: scale(1.1,1.1);
+    }
+}

@@ -4,6 +4,8 @@ class Color
     copy: () ->
         return new Color(@c, @m, @y)
 
+    set: (@c, @m, @y) ->
+
     add: (c) ->
         @c += c.c
         @m += c.m
@@ -25,18 +27,23 @@ class Color
         return Math.abs(@c - b.c) + Math.abs(@m - b.m) + Math.abs(@y - b.y) < 0.01
 
     apply: (e) ->
-        console.log @c, @m, @y
-        console.log @hex()
         $(e).css 'background-color': @hex()
+        if $(e).hasClass('square')
+            $(e).css 'color': @hex()
 
 
 class Square
     constructor: (@dom) ->
         @active = false
+        @setColor(new Color(1,1,1))
 
     activate: () ->
         @active = true
         @dom.addClass('pulse')
+
+    hide: () ->
+        @dom.addClass('hide')
+        @dom.removeClass('pulse')
 
     setColor: (c) ->
         @color = c.copy()
@@ -49,9 +56,19 @@ class Board
         @height = 8
         @dom.empty()
 
-    generate: (currentColor, mixins) ->
+    generate: (currentColor, stepsCount, mixins) ->
         colors = [currentColor, new Color(0.5,0.5,0), new Color(0.5,1.0,0), new Color(1.0,1.0,1.0)]
         @squares = []
+
+        markSet = (x, y) =>
+            @squares[y][x].set = true
+            @squares[y][x].setNeighbor = false
+            for i in [0...4]
+                dx = [-1,0,1,0][i]
+                dy = [0,1,0,-1][i]
+                if x + dx in [0...@width] and y + dy in [0...@height]
+                    @squares[y+dy][x+dx].setNeighbor = not @squares[y+dy][x+dx].set
+            
 
         for y in [0...@width]
             @squares.push []
@@ -60,7 +77,7 @@ class Board
                     <div class="square">
                     </div>
                 """))
-                square.setColor(colors[Math.floor(Math.random() * colors.length)])
+                #square.setColor(colors[Math.floor(Math.random() * colors.length)])
                 @squares[y].push square
                 @dom.append(square.dom)
             @dom.append("""<div class="newline"></div>""")
@@ -68,7 +85,52 @@ class Board
         initialX = Math.floor(Math.random() * @width)
         initialY = Math.floor(Math.random() * @height)
         @squares[initialY][initialX].setColor(currentColor)
+        markSet(initialX, initialY)
         @squares[initialY][initialX].activate()
+
+        totalSquares = @width * @height
+
+        #---
+        squareCounts = []
+        for step in [1..stepsCount]
+            squareCounts.push 0
+        for i in [1..totalSquares-1]
+            squareCounts[Math.floor(Math.random() * squareCounts.length)]++
+
+        console.log 'counts', squareCounts
+
+        color = currentColor.copy()
+        console.log mixins
+        for step in [0..stepsCount-1]
+            goodMixins = []
+            for mixin in mixins
+                c = color.copy()
+                c.add mixin
+                if not c.sameAs(color)
+                    goodMixins.push mixin
+            
+            if goodMixins.length
+                mixin = goodMixins[Math.floor(Math.random() * goodMixins.length)]
+                color.add mixin
+            else
+                color.set(0,0,0)
+
+            console.log 'Step', step, 'color', color.hex()
+            for i in [1..squareCounts[step]]
+                c = 0
+                while true
+                    c += 1
+                    if c > 1000
+                        console.log 'infinite', i, squareCounts[step]
+                        return
+                    x = Math.floor(Math.random() * @width)
+                    y = Math.floor(Math.random() * @height)
+                    sq = @squares[y][x]
+                    if sq.setNeighbor
+                        sq.setColor(color)
+                        markSet(x, y)
+                        break
+        
         @update(currentColor)
 
     update: (currentColor) ->
@@ -86,13 +148,24 @@ class Board
                                 sq2 = @squares[y+dy][x+dx]
                                 if not sq2.active
                                     if sq2.color.sameAs(currentColor)
-                                        console.log sq2.color.hex(), '=', currentColor.hex()
                                         needsAnotherRun = true
-                                        #sq2.setColor(currentColor)
                                         sq2.activate()
             if not needsAnotherRun
                 break
         
+        allSame = true
+        for y in [0...@width]
+            for x in [0...@height]
+                sq = @squares[y][x]
+                allSame &= @squares[0][0].color.sameAs(sq.color)
+        if allSame
+            setTimeout () =>
+                for y in [0...@width]
+                    for x in [0...@height]
+                        @squares[y][x].hide()
+            , 1000
+            @game.win()
+
 
 class Game
     constructor: () ->
@@ -100,27 +173,37 @@ class Game
 
     start: () ->
         @currentColor = new Color(0,0,0)
+        @turnsTotal = 5
+        @turnsUsed = 0
 
         mixins = [new Color(0.5,0,0), new Color(0,0.5,0), new Color(0,0,0.5)]
 
         mixinBox = $('#mixins')
-        mixinBox.empty()
+        mixinBox.find('.mixin').remove()
+        
         for mixin in mixins
             button = $("""
-                <a class="mixin">+</a>
+                <a class="mixin">
+                    <i class="fa fa-plus"></i>
+                </a>
             """)
             mixin.apply(button)
             mixinBox.append(button)
 
             ((mixin) =>
                 button.click () =>
+                    old = @currentColor.copy()
                     @currentColor.add(mixin)
-                    @updateCurrentColor()
+                    if not @currentColor.sameAs(old)
+                        @updateCurrentColor()
+                        @consumeTurn()
             )(mixin)
 
 
         button = $("""
-            <a class="mixin">R</a>
+            <a class="mixin">
+                <i class="fa fa-repeat"></i>
+            </a>
         """)
         new Color(0,0,0).apply(button)
         mixinBox.append(button)
@@ -130,13 +213,22 @@ class Game
             @currentColor.y = 0
             @updateCurrentColor()
 
-        @board.generate(@currentColor, mixins)
+        @board.generate(@currentColor, @turnsTotal, mixins)
         @updateCurrentColor()
+        @updateTurnCounter()
 
+    win: () ->
 
     updateCurrentColor: () ->
         @currentColor.apply($('#current-color'))
         @board.update(@currentColor)
+
+    consumeTurn: () ->
+        @turnsUsed += 1
+        @updateTurnCounter()
+
+    updateTurnCounter: () ->
+        $('#turn-counter #turns').text("#{@turnsTotal - @turnsUsed}")
 
 
 $ () ->

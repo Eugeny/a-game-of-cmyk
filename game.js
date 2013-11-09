@@ -15,6 +15,12 @@
       return new Color(this.c, this.m, this.y);
     };
 
+    Color.prototype.set = function(c, m, y) {
+      this.c = c;
+      this.m = m;
+      this.y = y;
+    };
+
     Color.prototype.add = function(c) {
       this.c += c.c;
       this.m += c.m;
@@ -40,11 +46,14 @@
     };
 
     Color.prototype.apply = function(e) {
-      console.log(this.c, this.m, this.y);
-      console.log(this.hex());
-      return $(e).css({
+      $(e).css({
         'background-color': this.hex()
       });
+      if ($(e).hasClass('square')) {
+        return $(e).css({
+          'color': this.hex()
+        });
+      }
     };
 
     return Color;
@@ -56,11 +65,17 @@
     function Square(dom) {
       this.dom = dom;
       this.active = false;
+      this.setColor(new Color(1, 1, 1));
     }
 
     Square.prototype.activate = function() {
       this.active = true;
       return this.dom.addClass('pulse');
+    };
+
+    Square.prototype.hide = function() {
+      this.dom.addClass('hide');
+      return this.dom.removeClass('pulse');
     };
 
     Square.prototype.setColor = function(c) {
@@ -81,15 +96,39 @@
       this.dom.empty();
     }
 
-    Board.prototype.generate = function(currentColor, mixins) {
-      var colors, initialX, initialY, square, x, y, _i, _j, _ref, _ref1;
+    Board.prototype.generate = function(currentColor, stepsCount, mixins) {
+      var c, color, colors, goodMixins, i, initialX, initialY, markSet, mixin, sq, square, squareCounts, step, totalSquares, x, y, _i, _j, _k, _l, _len, _m, _n, _o, _ref, _ref1, _ref2, _ref3, _ref4,
+        _this = this;
       colors = [currentColor, new Color(0.5, 0.5, 0), new Color(0.5, 1.0, 0), new Color(1.0, 1.0, 1.0)];
       this.squares = [];
+      markSet = function(x, y) {
+        var dx, dy, i, _i, _j, _k, _ref, _ref1, _ref2, _ref3, _results, _results1, _results2;
+        _this.squares[y][x].set = true;
+        _this.squares[y][x].setNeighbor = false;
+        _results = [];
+        for (i = _i = 0; _i < 4; i = ++_i) {
+          dx = [-1, 0, 1, 0][i];
+          dy = [0, 1, 0, -1][i];
+          if ((_ref = x + dx, __indexOf.call((function() {
+            _results1 = [];
+            for (var _j = 0, _ref1 = _this.width; 0 <= _ref1 ? _j < _ref1 : _j > _ref1; 0 <= _ref1 ? _j++ : _j--){ _results1.push(_j); }
+            return _results1;
+          }).apply(this), _ref) >= 0) && (_ref2 = y + dy, __indexOf.call((function() {
+            _results2 = [];
+            for (var _k = 0, _ref3 = _this.height; 0 <= _ref3 ? _k < _ref3 : _k > _ref3; 0 <= _ref3 ? _k++ : _k--){ _results2.push(_k); }
+            return _results2;
+          }).apply(this), _ref2) >= 0)) {
+            _results.push(_this.squares[y + dy][x + dx].setNeighbor = !_this.squares[y + dy][x + dx].set);
+          } else {
+            _results.push(void 0);
+          }
+        }
+        return _results;
+      };
       for (y = _i = 0, _ref = this.width; 0 <= _ref ? _i < _ref : _i > _ref; y = 0 <= _ref ? ++_i : --_i) {
         this.squares.push([]);
         for (x = _j = 0, _ref1 = this.height; 0 <= _ref1 ? _j < _ref1 : _j > _ref1; x = 0 <= _ref1 ? ++_j : --_j) {
           square = new Square($("<div class=\"square\">\n</div>"));
-          square.setColor(colors[Math.floor(Math.random() * colors.length)]);
           this.squares[y].push(square);
           this.dom.append(square.dom);
         }
@@ -98,13 +137,61 @@
       initialX = Math.floor(Math.random() * this.width);
       initialY = Math.floor(Math.random() * this.height);
       this.squares[initialY][initialX].setColor(currentColor);
+      markSet(initialX, initialY);
       this.squares[initialY][initialX].activate();
+      totalSquares = this.width * this.height;
+      squareCounts = [];
+      for (step = _k = 1; 1 <= stepsCount ? _k <= stepsCount : _k >= stepsCount; step = 1 <= stepsCount ? ++_k : --_k) {
+        squareCounts.push(0);
+      }
+      for (i = _l = 1, _ref2 = totalSquares - 1; 1 <= _ref2 ? _l <= _ref2 : _l >= _ref2; i = 1 <= _ref2 ? ++_l : --_l) {
+        squareCounts[Math.floor(Math.random() * squareCounts.length)]++;
+      }
+      console.log('counts', squareCounts);
+      color = currentColor.copy();
+      console.log(mixins);
+      for (step = _m = 0, _ref3 = stepsCount - 1; 0 <= _ref3 ? _m <= _ref3 : _m >= _ref3; step = 0 <= _ref3 ? ++_m : --_m) {
+        goodMixins = [];
+        for (_n = 0, _len = mixins.length; _n < _len; _n++) {
+          mixin = mixins[_n];
+          c = color.copy();
+          c.add(mixin);
+          if (!c.sameAs(color)) {
+            goodMixins.push(mixin);
+          }
+        }
+        if (goodMixins.length) {
+          mixin = goodMixins[Math.floor(Math.random() * goodMixins.length)];
+          color.add(mixin);
+        } else {
+          color.set(0, 0, 0);
+        }
+        console.log('Step', step, 'color', color.hex());
+        for (i = _o = 1, _ref4 = squareCounts[step]; 1 <= _ref4 ? _o <= _ref4 : _o >= _ref4; i = 1 <= _ref4 ? ++_o : --_o) {
+          c = 0;
+          while (true) {
+            c += 1;
+            if (c > 1000) {
+              console.log('infinite', i, squareCounts[step]);
+              return;
+            }
+            x = Math.floor(Math.random() * this.width);
+            y = Math.floor(Math.random() * this.height);
+            sq = this.squares[y][x];
+            if (sq.setNeighbor) {
+              sq.setColor(color);
+              markSet(x, y);
+              break;
+            }
+          }
+        }
+      }
       return this.update(currentColor);
     };
 
     Board.prototype.update = function(currentColor) {
-      var dx, dy, i, needsAnotherRun, sq, sq2, x, y, _i, _j, _k, _l, _m, _ref, _ref1, _ref2, _ref3, _ref4, _ref5, _results, _results1, _results2;
-      _results = [];
+      var allSame, dx, dy, i, needsAnotherRun, sq, sq2, x, y, _i, _j, _k, _l, _m, _n, _o, _ref, _ref1, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7, _results, _results1,
+        _this = this;
       while (true) {
         needsAnotherRun = false;
         for (y = _i = 0, _ref = this.width; 0 <= _ref ? _i < _ref : _i > _ref; y = 0 <= _ref ? ++_i : --_i) {
@@ -116,18 +203,17 @@
                 dx = [-1, 0, 1, 0][i];
                 dy = [0, 1, 0, -1][i];
                 if ((_ref2 = x + dx, __indexOf.call((function() {
-                  _results1 = [];
-                  for (var _l = 0, _ref3 = this.width; 0 <= _ref3 ? _l < _ref3 : _l > _ref3; 0 <= _ref3 ? _l++ : _l--){ _results1.push(_l); }
-                  return _results1;
+                  _results = [];
+                  for (var _l = 0, _ref3 = this.width; 0 <= _ref3 ? _l < _ref3 : _l > _ref3; 0 <= _ref3 ? _l++ : _l--){ _results.push(_l); }
+                  return _results;
                 }).apply(this), _ref2) >= 0) && (_ref4 = y + dy, __indexOf.call((function() {
-                  _results2 = [];
-                  for (var _m = 0, _ref5 = this.height; 0 <= _ref5 ? _m < _ref5 : _m > _ref5; 0 <= _ref5 ? _m++ : _m--){ _results2.push(_m); }
-                  return _results2;
+                  _results1 = [];
+                  for (var _m = 0, _ref5 = this.height; 0 <= _ref5 ? _m < _ref5 : _m > _ref5; 0 <= _ref5 ? _m++ : _m--){ _results1.push(_m); }
+                  return _results1;
                 }).apply(this), _ref4) >= 0)) {
                   sq2 = this.squares[y + dy][x + dx];
                   if (!sq2.active) {
                     if (sq2.color.sameAs(currentColor)) {
-                      console.log(sq2.color.hex(), '=', currentColor.hex());
                       needsAnotherRun = true;
                       sq2.activate();
                     }
@@ -139,11 +225,33 @@
         }
         if (!needsAnotherRun) {
           break;
-        } else {
-          _results.push(void 0);
         }
       }
-      return _results;
+      allSame = true;
+      for (y = _n = 0, _ref6 = this.width; 0 <= _ref6 ? _n < _ref6 : _n > _ref6; y = 0 <= _ref6 ? ++_n : --_n) {
+        for (x = _o = 0, _ref7 = this.height; 0 <= _ref7 ? _o < _ref7 : _o > _ref7; x = 0 <= _ref7 ? ++_o : --_o) {
+          sq = this.squares[y][x];
+          allSame &= this.squares[0][0].color.sameAs(sq.color);
+        }
+      }
+      if (allSame) {
+        setTimeout(function() {
+          var _p, _ref8, _results2;
+          _results2 = [];
+          for (y = _p = 0, _ref8 = _this.width; 0 <= _ref8 ? _p < _ref8 : _p > _ref8; y = 0 <= _ref8 ? ++_p : --_p) {
+            _results2.push((function() {
+              var _q, _ref9, _results3;
+              _results3 = [];
+              for (x = _q = 0, _ref9 = this.height; 0 <= _ref9 ? _q < _ref9 : _q > _ref9; x = 0 <= _ref9 ? ++_q : --_q) {
+                _results3.push(this.squares[y][x].hide());
+              }
+              return _results3;
+            }).call(_this));
+          }
+          return _results2;
+        }, 1000);
+        return this.game.win();
+      }
     };
 
     return Board;
@@ -160,23 +268,30 @@
       var button, mixin, mixinBox, mixins, _fn, _i, _len,
         _this = this;
       this.currentColor = new Color(0, 0, 0);
+      this.turnsTotal = 5;
+      this.turnsUsed = 0;
       mixins = [new Color(0.5, 0, 0), new Color(0, 0.5, 0), new Color(0, 0, 0.5)];
       mixinBox = $('#mixins');
-      mixinBox.empty();
+      mixinBox.find('.mixin').remove();
       _fn = function(mixin) {
         return button.click(function() {
+          var old;
+          old = _this.currentColor.copy();
           _this.currentColor.add(mixin);
-          return _this.updateCurrentColor();
+          if (!_this.currentColor.sameAs(old)) {
+            _this.updateCurrentColor();
+            return _this.consumeTurn();
+          }
         });
       };
       for (_i = 0, _len = mixins.length; _i < _len; _i++) {
         mixin = mixins[_i];
-        button = $("<a class=\"mixin\">+</a>");
+        button = $("<a class=\"mixin\">\n    <i class=\"fa fa-plus\"></i>\n</a>");
         mixin.apply(button);
         mixinBox.append(button);
         _fn(mixin);
       }
-      button = $("<a class=\"mixin\">R</a>");
+      button = $("<a class=\"mixin\">\n    <i class=\"fa fa-repeat\"></i>\n</a>");
       new Color(0, 0, 0).apply(button);
       mixinBox.append(button);
       button.click(function() {
@@ -185,13 +300,25 @@
         _this.currentColor.y = 0;
         return _this.updateCurrentColor();
       });
-      this.board.generate(this.currentColor, mixins);
-      return this.updateCurrentColor();
+      this.board.generate(this.currentColor, this.turnsTotal, mixins);
+      this.updateCurrentColor();
+      return this.updateTurnCounter();
     };
+
+    Game.prototype.win = function() {};
 
     Game.prototype.updateCurrentColor = function() {
       this.currentColor.apply($('#current-color'));
       return this.board.update(this.currentColor);
+    };
+
+    Game.prototype.consumeTurn = function() {
+      this.turnsUsed += 1;
+      return this.updateTurnCounter();
+    };
+
+    Game.prototype.updateTurnCounter = function() {
+      return $('#turn-counter #turns').text("" + (this.turnsTotal - this.turnsUsed));
     };
 
     return Game;

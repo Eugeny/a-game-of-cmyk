@@ -135,11 +135,13 @@ class Board
 
     update: (currentColor) ->
         while true
+            @completed = 0
             needsAnotherRun = false
             for y in [0...@width]
                 for x in [0...@height]
                     sq = @squares[y][x]
                     if sq.active
+                        @completed += 1
                         sq.setColor(currentColor)
                         for i in [0..3]
                             dx = [-1,0,1,0][i]
@@ -158,12 +160,14 @@ class Board
             for x in [0...@height]
                 sq = @squares[y][x]
                 allSame &= @squares[0][0].color.sameAs(sq.color)
+
         if allSame
             setTimeout () =>
                 for y in [0...@width]
                     for x in [0...@height]
                         @squares[y][x].hide()
             , 1000
+            @completed = 64
             @game.win()
 
 
@@ -195,8 +199,9 @@ class Game
                     old = @currentColor.copy()
                     @currentColor.add(mixin)
                     if not @currentColor.sameAs(old)
-                        @updateCurrentColor()
                         @consumeTurn()
+                        @updateCurrentColor()
+                        @updateTurnCounter()
             )(mixin)
 
 
@@ -228,7 +233,9 @@ class Game
         @updateTurnCounter()
 
     updateTurnCounter: () ->
-        $('#turn-counter #turns').text("#{@turnsTotal - @turnsUsed}")
+        $('#turn-counter .spinner').text("#{@turnsTotal - @turnsUsed}")
+        $('#progress .spinner').text("#{Math.floor(@board.completed * 100 / 64)}")
+
 
 
 $ () ->

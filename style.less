@@ -1,6 +1,8 @@
 body {
     font-family: 'Coda', sans-serif;
-
+    background: url('resources/diagmonds.png');
+    padding: 0 0 150px;
+    margin: 0;
 }
 
 .glossy-button {
@@ -14,9 +16,10 @@ body {
     @c: rgba(0,0,0,0.125);
     @d: rgba(255,255,255,0.25);
 
-    -moz-transition:     background-color 0.5s,    -moz-transform 0.5s, box-shadow 0.5s, padding 0.5s;
-    -webkit-transition:  background-color 0.5s, -webkit-transform 0.5s, box-shadow 0.5s, padding 0.5s;
-    transition:          background-color 0.5s,         transform 0.5s, box-shadow 0.5s, padding 0.5s;
+    @t: 0.25s;
+    -moz-transition:     background-color @t,    -moz-transform @t, box-shadow @t, padding @t;
+    -webkit-transition:  background-color @t, -webkit-transform @t, box-shadow @t, padding @t;
+    transition:          background-color @t,         transform @t, box-shadow @t, padding @t;
 
     background-image: -moz-linear-gradient(-45deg, @a 0%, @b 50%, @c 51%, @d 100%); /* Chrome10+,Safari5.1+ */
     background-image: linear-gradient(135deg, @a 0%, @b 50%, @c 51%, @d 100%); /* W3C */
@@ -34,13 +37,21 @@ body {
     -webkit-transform: @x;
 }
 
+
+.container {
+    margin: auto;
+    width: 1000px;
+    overflow: hidden;
+}
+
 #board {
     width: 480px;
+    float: left;
     padding: 20px;
     border-radius: 20px;
-    margin: auto;
-    background: url('resources/bg.png') repeat;
+    background: url('resources/black_lozenge.png') repeat;
     overflow: hidden;
+    box-shadow: 0 2px 2px rgba(0,0,0,.5) inset, 0 -1px 1px rgba(255,255,255,.125) inset, 0 0 5px black;
 
     .square {
         float: left;
@@ -69,13 +80,14 @@ body {
     }
 }
 
-#turn-counter {
-    display: inline-block;
+.counter {
+    float: left;
     overflow: hidden;
-    padding: 4px 20px 5px;
-    .glossy-button();
+    padding: 200px 0px 5px;
+    width: 240px;
+    color: white;
 
-    #turns {
+    .spinner {
         font-size: 72px;
         float: left;
     }
@@ -83,19 +95,39 @@ body {
     .label {
         float: left;
         font-size: 24px;
-        padding: 14px 0 0 10px;
+        padding: 14px 10px 0;
         line-height: 20px;
-        text-align: left;
+        text-align: right;
+    }
+
+    &.right {
+        .spinner {
+            float: right;
+        }
+
+        .label {
+            float: right;
+            text-align: left;
+        }
     }
 }
 
+#controls {
+    background: url('resources/grey.png');
+    box-shadow: 0 0 5px black;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}
+
 #mixins {
+    @r: 5px;
     *:first-child {
-        border-radius: 15px 0 0 15px;
+        border-radius: @r 0 0 @r;
     }
 
     *:last-child {
-        border-radius: 0 15px 15px 0;
+        border-radius: 0 @r @r 0;
     }
     padding: 20px;
     text-align: center;

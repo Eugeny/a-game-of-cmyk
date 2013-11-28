@@ -24,20 +24,34 @@
         <div style="font-family: 'Press Start 2P'"></div>
         <div style="font-family: 'VT323'"></div>
 
-        <div id="board">
-            <div class="square pulse">
-            </div>
-        </div>
-
-        <div id="mixins">
-            <div id="turn-counter">
-                <div id="turns" class="odometer">
-                    0
-                </div>
-
+        <div class="container">
+            <div class="counter" id="turn-counter">
                 <div class="label">
                     turns<br/>left
                 </div>
-            </div></div>
+                <div class="spinner odometer">
+                    0
+                </div>
+            </div>
+
+            <div id="board">
+                <div class="square pulse">
+                </div>
+            </div>
+
+            <div class="counter right" id="progress">
+                <div class="label">
+                    %<br/>complete
+                </div>
+                <div class="spinner odometer">
+                    0
+                </div>
+            </div>
+        </div>
+
+        <div id="controls">
+            <div id="mixins">
+            </div>
+        </div>
     </body>
 </html>

@@ -193,11 +193,13 @@
       var allSame, dx, dy, i, needsAnotherRun, sq, sq2, x, y, _i, _j, _k, _l, _m, _n, _o, _ref, _ref1, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7, _results, _results1,
         _this = this;
       while (true) {
+        this.completed = 0;
         needsAnotherRun = false;
         for (y = _i = 0, _ref = this.width; 0 <= _ref ? _i < _ref : _i > _ref; y = 0 <= _ref ? ++_i : --_i) {
           for (x = _j = 0, _ref1 = this.height; 0 <= _ref1 ? _j < _ref1 : _j > _ref1; x = 0 <= _ref1 ? ++_j : --_j) {
             sq = this.squares[y][x];
             if (sq.active) {
+              this.completed += 1;
               sq.setColor(currentColor);
               for (i = _k = 0; _k <= 3; i = ++_k) {
                 dx = [-1, 0, 1, 0][i];
@@ -250,6 +252,7 @@
           }
           return _results2;
         }, 1000);
+        this.completed = 64;
         return this.game.win();
       }
     };
@@ -279,8 +282,9 @@
           old = _this.currentColor.copy();
           _this.currentColor.add(mixin);
           if (!_this.currentColor.sameAs(old)) {
+            _this.consumeTurn();
             _this.updateCurrentColor();
-            return _this.consumeTurn();
+            return _this.updateTurnCounter();
           }
         });
       };
@@ -318,7 +322,8 @@
     };
 
     Game.prototype.updateTurnCounter = function() {
-      return $('#turn-counter #turns').text("" + (this.turnsTotal - this.turnsUsed));
+      $('#turn-counter .spinner').text("" + (this.turnsTotal - this.turnsUsed));
+      return $('#progress .spinner').text("" + (Math.floor(this.board.completed * 100 / 64)));
     };
 
     return Game;

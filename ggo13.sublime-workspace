@@ -4,6 +4,26 @@
 		"selected_items":
 		[
 			[
+				"update",
+				"updateTurnCounter"
+			],
+			[
+				"turns",
+				"turnsUsed"
+			],
+			[
+				"sq",
+				"squares"
+			],
+			[
+				"initi",
+				"initialX"
+			],
+			[
+				"square",
+				"squareCounts"
+			],
+			[
 				"ini",
 				"initialX"
 			],
@@ -494,26 +514,6 @@
 			[
 				"time",
 				"time_text"
-			],
-			[
-				"last",
-				"lastTimestampText"
-			],
-			[
-				"add",
-				"add_header"
-			],
-			[
-				"font-",
-				"font-family"
-			],
-			[
-				"t",
-				"text-decoration"
-			],
-			[
-				"SHARE",
-				"SHARE_NAME"
 			]
 		]
 	},
@@ -523,7 +523,7 @@
 			"file": "index.html",
 			"settings":
 			{
-				"buffer_size": 1020,
+				"buffer_size": 1677,
 				"line_ending": "Unix",
 				"name": "<!DOCTYPE html>"
 			}
@@ -532,7 +532,7 @@
 			"file": "style.less",
 			"settings":
 			{
-				"buffer_size": 3389,
+				"buffer_size": 3995,
 				"line_ending": "Unix"
 			}
 		},
@@ -540,7 +540,7 @@
 			"file": "game.coffee",
 			"settings":
 			{
-				"buffer_size": 4088,
+				"buffer_size": 6941,
 				"line_ending": "Unix"
 			}
 		}
@@ -811,6 +811,8 @@
 		"case_sensitive": true,
 		"find_history":
 		[
+			"' = ' ",
+			"setNeighbour",
 			"10",
 			"0.666",
 			"0.333",
@@ -936,9 +938,7 @@
 			"childNodes",
 			"print",
 			"$(\"\"\"",
-			"work",
-			"Defl",
-			"zlib"
+			"work"
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -977,7 +977,7 @@
 	"groups":
 	[
 		{
-			"selected": 2,
+			"selected": 1,
 			"sheets":
 			[
 				{
@@ -985,15 +985,15 @@
 					"file": "index.html",
 					"settings":
 					{
-						"buffer_size": 1020,
+						"buffer_size": 1677,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								904,
-								904
+								1657,
+								1657
 							]
 						],
 						"settings":
@@ -1088,10 +1088,12 @@
 								"Ruby on Rails": "ruby"
 							},
 							"sublimelinter_wrap_find": true,
-							"syntax": "Packages/Djaneiro/Syntaxes/HTML (Django).tmLanguage"
+							"syntax": "Packages/Djaneiro/Syntaxes/HTML (Django).tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 0.0,
+						"translation.y": 225.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"
@@ -1101,15 +1103,15 @@
 					"file": "style.less",
 					"settings":
 					{
-						"buffer_size": 3389,
+						"buffer_size": 3995,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								1382,
-								1382
+								1761,
+								1761
 							]
 						],
 						"settings":
@@ -1203,10 +1205,12 @@
 								"Ruby on Rails": "ruby"
 							},
 							"sublimelinter_wrap_find": true,
-							"syntax": "Packages/LESS/LESS.tmLanguage"
+							"syntax": "Packages/LESS/LESS.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 270.0,
+						"translation.y": 1080.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"
@@ -1216,15 +1220,15 @@
 					"file": "game.coffee",
 					"settings":
 					{
-						"buffer_size": 4088,
+						"buffer_size": 6941,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								2865,
-								2865
+								5557,
+								5557
 							]
 						],
 						"settings":
@@ -1318,10 +1322,12 @@
 								"Ruby on Rails": "ruby"
 							},
 							"sublimelinter_wrap_find": true,
-							"syntax": "Packages/CoffeeScript/CoffeeScript.tmLanguage"
+							"syntax": "Packages/CoffeeScript/CoffeeScript.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 900.0,
+						"translation.y": 2610.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"
@@ -1455,15 +1461,15 @@
 		"selected_items":
 		[
 			[
+				"aj",
+				"/home/eugeny/Work/ajenti-ng/ajenti.sublime-project"
+			],
+			[
 				"crm",
 				"/home/eugeny/Work/contacts/crm.sublime-project"
 			],
 			[
 				"aje",
-				"/home/eugeny/Work/ajenti-ng/ajenti.sublime-project"
-			],
-			[
-				"aj",
 				"/home/eugeny/Work/ajenti-ng/ajenti.sublime-project"
 			],
 			[

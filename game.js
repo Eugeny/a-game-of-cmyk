@@ -89,16 +89,17 @@
 
   Board = (function() {
 
-    function Board(dom) {
+    function Board(dom, game) {
       this.dom = dom;
+      this.game = game;
       this.width = 8;
       this.height = 8;
-      this.dom.empty();
     }
 
     Board.prototype.generate = function(currentColor, stepsCount, mixins) {
       var c, color, colors, goodMixins, i, initialX, initialY, markSet, mixin, sq, square, squareCounts, step, totalSquares, x, y, _i, _j, _k, _l, _len, _m, _n, _o, _ref, _ref1, _ref2, _ref3, _ref4,
         _this = this;
+      this.dom.empty();
       colors = [currentColor, new Color(0.5, 0.5, 0), new Color(0.5, 1.0, 0), new Color(1.0, 1.0, 1.0)];
       this.squares = [];
       markSet = function(x, y) {
@@ -147,11 +148,10 @@
       for (i = _l = 1, _ref2 = totalSquares - 1; 1 <= _ref2 ? _l <= _ref2 : _l >= _ref2; i = 1 <= _ref2 ? ++_l : --_l) {
         squareCounts[Math.floor(Math.random() * squareCounts.length)]++;
       }
-      console.log('counts', squareCounts);
       color = currentColor.copy();
       console.log(mixins);
       for (step = _m = 0, _ref3 = stepsCount - 1; 0 <= _ref3 ? _m <= _ref3 : _m >= _ref3; step = 0 <= _ref3 ? ++_m : --_m) {
-        goodMixins = [];
+        goodMixins = [null];
         for (_n = 0, _len = mixins.length; _n < _len; _n++) {
           mixin = mixins[_n];
           c = color.copy();
@@ -162,7 +162,11 @@
         }
         if (goodMixins.length) {
           mixin = goodMixins[Math.floor(Math.random() * goodMixins.length)];
-          color.add(mixin);
+          if (mixin === null) {
+            color.set(0, 0, 0);
+          } else {
+            color.add(mixin);
+          }
         } else {
           color.set(0, 0, 0);
         }
@@ -264,7 +268,7 @@
   Game = (function() {
 
     function Game() {
-      this.board = new Board($('#board'));
+      this.board = new Board($('#board'), this);
     }
 
     Game.prototype.start = function() {
@@ -282,9 +286,8 @@
           old = _this.currentColor.copy();
           _this.currentColor.add(mixin);
           if (!_this.currentColor.sameAs(old)) {
-            _this.consumeTurn();
             _this.updateCurrentColor();
-            return _this.updateTurnCounter();
+            return _this.consumeTurn();
           }
         });
       };
@@ -302,14 +305,21 @@
         _this.currentColor.c = 0;
         _this.currentColor.m = 0;
         _this.currentColor.y = 0;
-        return _this.updateCurrentColor();
+        _this.updateCurrentColor();
+        return _this.consumeTurn();
       });
       this.board.generate(this.currentColor, this.turnsTotal, mixins);
       this.updateCurrentColor();
       return this.updateTurnCounter();
     };
 
-    Game.prototype.win = function() {};
+    Game.prototype.lose = function() {
+      return $('#dialog-lost').show();
+    };
+
+    Game.prototype.win = function() {
+      return $('#dialog-won').show();
+    };
 
     Game.prototype.updateCurrentColor = function() {
       this.currentColor.apply($('#current-color'));
@@ -317,8 +327,12 @@
     };
 
     Game.prototype.consumeTurn = function() {
-      this.turnsUsed += 1;
-      return this.updateTurnCounter();
+      if (this.turnsUsed === this.turnsTotal) {
+        return this.lose();
+      } else {
+        this.turnsUsed += 1;
+        return this.updateTurnCounter();
+      }
     };
 
     Game.prototype.updateTurnCounter = function() {
@@ -332,8 +346,15 @@
 
   $(function() {
     var g;
+    $('.modal').click(function() {
+      return $(this).hide();
+    });
     g = new Game();
-    return g.start();
+    g.start();
+    window.game = g;
+    return $('.retry').click(function() {
+      return g.start();
+    });
   });
 
 }).call(this);

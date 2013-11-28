@@ -48,6 +48,7 @@ body {
     width: 480px;
     float: left;
     padding: 20px;
+    margin: 20px 0 0;
     border-radius: 20px;
     background: url('resources/black_lozenge.png') repeat;
     overflow: hidden;
@@ -83,17 +84,17 @@ body {
 .counter {
     float: left;
     overflow: hidden;
-    padding: 200px 0px 5px;
-    width: 240px;
+    padding: 200px 40px 5px 0;
+    width: 200px;
     color: white;
 
     .spinner {
         font-size: 72px;
-        float: left;
+        float: right;
     }
 
     .label {
-        float: left;
+        float: right;
         font-size: 24px;
         padding: 14px 10px 0;
         line-height: 20px;
@@ -101,12 +102,13 @@ body {
     }
 
     &.right {
+        padding: 200px 0 5px 40px;
         .spinner {
-            float: right;
+            float: left;
         }
 
         .label {
-            float: right;
+            float: left;
             text-align: left;
         }
     }
@@ -120,8 +122,23 @@ body {
     width: 100%;
 }
 
+#credits {
+    text-align: center;
+    color: #ccc;
+    font-size: 16px;
+
+    a {
+        color: white;
+    }
+}
+
+a {
+    text-decoration: none;
+}
+
 #mixins {
     @r: 5px;
+
     *:first-child {
         border-radius: @r 0 0 @r;
     }
@@ -157,6 +174,33 @@ body {
         padding: 18px 24px 14px;
     }
 
+}
+
+.modal {
+    position: fixed;
+    left: 50%;
+    top: 0;
+    width: 500px;
+    margin: 100px 0 0 -300px;
+    padding: 20px 50px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 0 50px black, 0 0 300px black;
+}
+
+
+#help .illustration {
+    font-size: 100px;
+    vertical-align: middle;
+
+    padding: 0;
+    margin: 0;
+
+    img {
+        width: 100px;
+        border-radius: 10px;
+        box-shadow: 0 1px 1px rgba(0,0,0,.25);
+    }
 }
 
 

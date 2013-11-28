@@ -51,12 +51,12 @@ class Square
 
 
 class Board
-    constructor: (@dom) ->
+    constructor: (@dom, @game) ->
         @width = 8
         @height = 8
-        @dom.empty()
 
     generate: (currentColor, stepsCount, mixins) ->
+        @dom.empty()
         colors = [currentColor, new Color(0.5,0.5,0), new Color(0.5,1.0,0), new Color(1.0,1.0,1.0)]
         @squares = []
 
@@ -97,12 +97,10 @@ class Board
         for i in [1..totalSquares-1]
             squareCounts[Math.floor(Math.random() * squareCounts.length)]++
 
-        console.log 'counts', squareCounts
-
         color = currentColor.copy()
         console.log mixins
         for step in [0..stepsCount-1]
-            goodMixins = []
+            goodMixins = [null]
             for mixin in mixins
                 c = color.copy()
                 c.add mixin
@@ -111,7 +109,10 @@ class Board
             
             if goodMixins.length
                 mixin = goodMixins[Math.floor(Math.random() * goodMixins.length)]
-                color.add mixin
+                if mixin == null
+                    color.set(0,0,0)
+                else
+                    color.add mixin
             else
                 color.set(0,0,0)
 
@@ -173,7 +174,7 @@ class Board
 
 class Game
     constructor: () ->
-        @board = new Board($('#board'))
+        @board = new Board($('#board'), this)
 
     start: () ->
         @currentColor = new Color(0,0,0)
@@ -199,9 +200,8 @@ class Game
                     old = @currentColor.copy()
                     @currentColor.add(mixin)
                     if not @currentColor.sameAs(old)
-                        @consumeTurn()
                         @updateCurrentColor()
-                        @updateTurnCounter()
+                        @consumeTurn()
             )(mixin)
 
 
@@ -217,20 +217,28 @@ class Game
             @currentColor.m = 0
             @currentColor.y = 0
             @updateCurrentColor()
+            @consumeTurn()
 
         @board.generate(@currentColor, @turnsTotal, mixins)
         @updateCurrentColor()
         @updateTurnCounter()
 
+    lose: () ->
+        $('#dialog-lost').show()
+
     win: () ->
+        $('#dialog-won').show()
 
     updateCurrentColor: () ->
         @currentColor.apply($('#current-color'))
         @board.update(@currentColor)
 
     consumeTurn: () ->
-        @turnsUsed += 1
-        @updateTurnCounter()
+        if @turnsUsed == @turnsTotal
+            @lose()
+        else
+            @turnsUsed += 1
+            @updateTurnCounter()
 
     updateTurnCounter: () ->
         $('#turn-counter .spinner').text("#{@turnsTotal - @turnsUsed}")
@@ -238,6 +246,15 @@ class Game
 
 
 
+
+
 $ () ->
+    $('.modal').click () ->
+        $(this).hide()
+
     g = new Game()
     g.start()
+    window.game = g
+
+    $('.retry').click () ->
+        g.start()

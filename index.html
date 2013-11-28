@@ -1,19 +1,20 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <link href='http://fonts.googleapis.com/css?family=Coda' rel='stylesheet' type='text/css'>
+        <title>A Game of CMYK</title>
 
+        <!-- jQ -->
         <script type="text/javascript" src="//cdn.jsdelivr.net/jquery/2.0.3/jquery-2.0.3.min.js"></script>
-        <script type="text/javascript" src="//cdn.jsdelivr.net/kineticjs/4.5.4/kinetic.min.js"></script>
 
-        
+        <!-- LESS -->
         <link rel="stylesheet/less" href="style.less" type="text/css" />
         <script type="text/javascript" src="//cdn.jsdelivr.net/less/1.4.2/less.min.js"></script>
 
-        <link href='http://fonts.googleapis.com/css?family=Press+Start+2P' rel='stylesheet' type='text/css'>
-        <link href='http://fonts.googleapis.com/css?family=VT323' rel='stylesheet' type='text/css'>
+        <!-- Fonts -->
+        <link href='http://fonts.googleapis.com/css?family=Coda' rel='stylesheet' type='text/css'>
         <link type="text/css" rel="stylesheet" href="//cdn.jsdelivr.net/fontawesome/4.0.3/css/font-awesome.min.css" />
 
+        <!-- Odometer -->
         <script type="text/javascript" src="//cdn.jsdelivr.net/odometer/0.3.6/odometer.min.js"></script>
         <link type="text/css" rel="stylesheet" href="//cdn.jsdelivr.net/odometer/0.3.6/themes/odometer-theme-default.css" />
 
@@ -26,11 +27,11 @@
 
         <div class="container">
             <div class="counter" id="turn-counter">
-                <div class="label">
-                    turns<br/>left
-                </div>
                 <div class="spinner odometer">
                     0
+                </div>
+                <div class="label">
+                    turns<br/>left
                 </div>
             </div>
 
@@ -40,18 +41,52 @@
             </div>
 
             <div class="counter right" id="progress">
-                <div class="label">
-                    %<br/>complete
-                </div>
                 <div class="spinner odometer">
                     0
                 </div>
+                <div class="label">
+                    %<br/>done
+                </div>
             </div>
+        </div>
+
+        <div id="credits">
+            A game by <a href="http://github.com/Eugeny"><i class="fa fa-github"></i> Eugeny</a>
         </div>
 
         <div id="controls">
             <div id="mixins">
             </div>
+        </div>
+
+        <div class="modal" id="help">
+            <h1>A Game of CMYK</h1>
+            <h2>How to play</h2>
+
+            <p>Click the color buttons to add color to active blocks.</p>
+            <p class="illustration">
+                <img src="resources/help-11.png">
+                +
+                <img src="resources/help-12.png">
+                =
+                <img src="resources/help-13.png">
+            </p>
+
+            <p>Click the white button to reset the color of active blocks.</p>
+
+            <p>Match all the colors within the given number of turns!</p>
+        </div>
+
+        <div class="modal" id="dialog-lost" style="display:none">
+            <h1>You have lost</h1>
+            <i class="fa fa-refresh"></i> <a href="#" class="retry">Try again?</a>
+        </div>
+
+        <div class="modal" id="dialog-won" style="display:none">
+            <h1>You have won!</h1>
+            <i class="fa fa-twitter"></i> <a href="https://twitter.com/share?url=http://eugeny.github.io/a-game-of-cmyk/&text=I have beat the Game of CMYK!">Tweet this!</a>
+            <br/>
+            <i class="fa fa-refresh"></i> <a href="#" class="retry">Try again?</a>
         </div>
     </body>
 </html>

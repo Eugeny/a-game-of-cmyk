@@ -523,7 +523,7 @@
 			"file": "index.html",
 			"settings":
 			{
-				"buffer_size": 1677,
+				"buffer_size": 3198,
 				"line_ending": "Unix",
 				"name": "<!DOCTYPE html>"
 			}
@@ -532,7 +532,7 @@
 			"file": "style.less",
 			"settings":
 			{
-				"buffer_size": 3995,
+				"buffer_size": 5230,
 				"line_ending": "Unix"
 			}
 		},
@@ -540,7 +540,7 @@
 			"file": "game.coffee",
 			"settings":
 			{
-				"buffer_size": 6941,
+				"buffer_size": 7499,
 				"line_ending": "Unix"
 			}
 		}
@@ -811,6 +811,14 @@
 		"case_sensitive": true,
 		"find_history":
 		[
+			"right",
+			"left",
+			"}\n",
+			"left",
+			"h1",
+			"15px",
+			"0.5s",
+			"transi",
 			"' = ' ",
 			"setNeighbour",
 			"10",
@@ -930,15 +938,7 @@
 			"task_descriptions",
 			"hide",
 			"dom",
-			"dropdo",
-			"hc",
-			"select",
-			".find",
-			"tooltip",
-			"childNodes",
-			"print",
-			"$(\"\"\"",
-			"work"
+			"dropdo"
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -977,7 +977,7 @@
 	"groups":
 	[
 		{
-			"selected": 1,
+			"selected": 0,
 			"sheets":
 			[
 				{
@@ -985,15 +985,15 @@
 					"file": "index.html",
 					"settings":
 					{
-						"buffer_size": 1677,
+						"buffer_size": 3198,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								1657,
-								1657
+								3046,
+								3046
 							]
 						],
 						"settings":
@@ -1093,7 +1093,7 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 225.0,
+						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"
@@ -1103,15 +1103,15 @@
 					"file": "style.less",
 					"settings":
 					{
-						"buffer_size": 3995,
+						"buffer_size": 5230,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								1761,
-								1761
+								2022,
+								2022
 							]
 						],
 						"settings":
@@ -1220,15 +1220,15 @@
 					"file": "game.coffee",
 					"settings":
 					{
-						"buffer_size": 6941,
+						"buffer_size": 7499,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								5557,
-								5557
+								6868,
+								6868
 							]
 						],
 						"settings":
@@ -1327,7 +1327,7 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 2610.0,
+						"translation.y": 3120.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"
